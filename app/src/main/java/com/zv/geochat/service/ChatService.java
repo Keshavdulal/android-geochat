@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import com.zv.geochat.Constants;
 import com.zv.geochat.notification.NotificationDecorator;
 
 public class ChatService extends Service {
@@ -19,6 +20,7 @@ public class ChatService extends Service {
     public static final int CMD_LEAVE_CHAT = 20;
     public static final int CMD_SEND_MESSAGE = 30;
     public static final int CMD_RECEIVE_MESSAGE = 40;
+    public static final int CONNECT_ERROR_47 = 47;
     public static final String KEY_MESSAGE_TEXT = "message_text";
     public static final String KEY_USER_NAME = "user_name";
 
@@ -96,8 +98,15 @@ public class ChatService extends Service {
             String testUser = "User2";
             String testMessage = "Simulated Message";
             notificationDecorator.displaySimpleNotification("New message...: "+ testUser, testMessage);
-        } else {
-            Log.w(TAG, "Ignoring Unknown Command! id=" + command);
+        }
+        else if (command == CONNECT_ERROR_47) {
+            String message = Integer.toString(CONNECT_ERROR_47);
+            notificationDecorator.displaySimpleNotification("Connect Error: ", message);
+        }
+        else {
+//            Log.w(TAG, "Ignoring Unknown Command! id=" + command);
+            String message = Integer.toString(command);
+            notificationDecorator.displaySimpleNotification("ChatService Received: ", message);
         }
     }
 }

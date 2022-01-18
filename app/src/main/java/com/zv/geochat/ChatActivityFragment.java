@@ -14,6 +14,8 @@ import android.widget.EditText;
 
 import com.zv.geochat.service.ChatService;
 
+import java.util.Random;
+
 public class ChatActivityFragment extends Fragment {
     private static final String TAG = "ChatActivityFragment";
     EditText edtMessage;
@@ -66,6 +68,35 @@ public class ChatActivityFragment extends Fragment {
             }
         });
 
+        // send connect error xx
+        Button btnSendConnectError = (Button) v.findViewById(R.id.btnSendConnectError);
+        btnSendConnectError.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Connect Error:" + Integer.toString(ChatService.CONNECT_ERROR_47), Snackbar.LENGTH_LONG)
+                  .setAction("Action", null).show();
+                sendConnectError();
+            }
+        });
+
+        // send random ID
+        Button btnSendRandomId = (Button) v.findViewById(R.id.btnSendRandomId);
+        btnSendRandomId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // generate random ID
+                int min = 10000;
+                int max = 99999;
+                Random r = new Random();
+                int randomID = r.nextInt(max - min + 1) + min;
+
+                Snackbar.make(view, "ChatService Received:" + Integer.toString(randomID), Snackbar.LENGTH_LONG)
+                  .setAction("Action", null).show();
+                sendRandomID(randomID);
+            }
+        });
+
+
         edtMessage = (EditText) v.findViewById(R.id.edtMessage);
 
         loadUserNameFromPreferences();
@@ -107,6 +138,22 @@ public class ChatActivityFragment extends Fragment {
     private void simulateOnMessage(){
         Bundle data = new Bundle();
         data.putInt(ChatService.MSG_CMD, ChatService.CMD_RECEIVE_MESSAGE);
+        Intent intent = new Intent(getContext(), ChatService.class);
+        intent.putExtras(data);
+        getActivity().startService(intent);
+    }
+
+    private void sendConnectError(){
+        Bundle data = new Bundle();
+        data.putInt(ChatService.MSG_CMD, ChatService.CONNECT_ERROR_47);
+        Intent intent = new Intent(getContext(), ChatService.class);
+        intent.putExtras(data);
+        getActivity().startService(intent);
+    }
+
+    private void sendRandomID(int randomID){
+        Bundle data = new Bundle();
+        data.putInt(ChatService.MSG_CMD, randomID);
         Intent intent = new Intent(getContext(), ChatService.class);
         intent.putExtras(data);
         getActivity().startService(intent);
